@@ -1,0 +1,6 @@
+{
+  "name": "Staad TV",
+  "description": "منصة بث مباشر للقنوات الإخبارية والرياضية والأفلام والمسلسلات مع لوحة تحكم متكاملة",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

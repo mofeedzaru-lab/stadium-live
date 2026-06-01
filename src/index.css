@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --color-slate-950: var(--slate-950);
+  --color-slate-905: var(--slate-905);
+  --color-slate-900: var(--slate-900);
+  --color-slate-850: var(--slate-850);
+  --color-slate-800: var(--slate-800);
+  --color-slate-700: var(--slate-700);
+  --color-slate-450: var(--slate-450);
+  --color-slate-400: var(--slate-400);
+  --color-slate-350: var(--slate-350);
+  --color-slate-300: var(--slate-300);
+  --color-slate-200: var(--slate-200);
+  --color-slate-100: var(--slate-100);
+  --color-slate-150: var(--slate-150);
+  --color-slate-50: var(--slate-50);
+}
+
+:root {
+  /* Light Mode values - default */
+  --slate-950: #f8fafc; /* Page Background (slate-50) */
+  --slate-905: #f1f5f9; /* Video Player Header Background (slate-100) */
+  --slate-900: #ffffff; /* Card & Nav surfaces (white) */
+  --slate-850: #f1f5f9; /* Inner list/episode background (slate-100) */
+  --slate-800: #e2e8f0; /* Thin border lines (slate-200) */
+  --slate-700: #cbd5e1; /* Strong/hover borders (slate-300) */
+  --slate-450: #475569; /* Grayed/Muted secondary icons (slate-600) */
+  --slate-405: #475569; /* Secondary text */
+  --slate-400: #475569; /* Secondary text (slate-600) */
+  --slate-350: #334155; /* Read/Medium strength body text (slate-700) */
+  --slate-300: #1e293b; /* Body texts (slate-800) */
+  --slate-200: #0f172a; /* Heavy texts (slate-900) */
+  --slate-100: #0f172a; /* Body contrast (slate-900) */
+  --slate-150: #0f172a; /* High contrast titles originally white (slate-900) */
+  --slate-50: #ffffff;
+}
+
+.dark {
+  /* Dark Mode values - toggled */
+  --slate-950: #020617; /* Original dark page bg */
+  --slate-905: #090e1f; /* Original dark player header */
+  --slate-900: #0f172a; /* Original dark card surface */
+  --slate-850: #172033; /* Original dark list item info */
+  --slate-800: #1e293b; /* Original dark border line */
+  --slate-700: #334155; /* Original hover border line */
+  --slate-450: #64748b; /* Original gray icons */
+  --slate-405: #94a3b8; /* Original grey items */
+  --slate-400: #94a3b8; /* Original secondary descriptions */
+  --slate-350: #cbd5e1; /* Original readable slate */
+  --slate-300: #cbd5e1; /* Original readable labels */
+  --slate-200: #e2e8f0; /* Original white contrast texts */
+  --slate-100: #f1f5f9; /* Original white-ish texts */
+  --slate-150: #ffffff; /* Original clean contrast white */
+  --slate-50: #0f172a;
+}
+
+@utility scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
+

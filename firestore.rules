@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Catch-all default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global helpers
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    function isSignedIn() { 
+      return request.auth != null; 
+    }
+    function isAdmin() { 
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); 
+    }
+
+    // Dynamic schema validation functions for creation/updates
+    function isValidChannel(data) {
+      return data.keys().hasAll(['id', 'name', 'logoUrl', 'streamUrl', 'category'])
+        && data.keys().size() == 5
+        && data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() <= 200
+        && data.logoUrl is string && data.logoUrl.size() <= 1000
+        && data.streamUrl is string && data.streamUrl.size() <= 1000
+        && data.category in ['sports', 'news', 'general'];
+    }
+
+    function isValidLiveMatch(data) {
+      return data.keys().hasAll(['id', 'title', 'teamHome', 'teamAway', 'tournamentName', 'matchTime', 'streamUrl', 'status'])
+        && data.keys().size() == 8
+        && data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 200
+        && data.teamHome is string && data.teamHome.size() <= 200
+        && data.teamAway is string && data.teamAway.size() <= 200
+        && data.tournamentName is string && data.tournamentName.size() <= 200
+        && data.matchTime is string && data.matchTime.size() <= 128
+        && data.streamUrl is string && data.streamUrl.size() <= 1000
+        && data.status in ['scheduled', 'live', 'finished'];
+    }
+
+    function isValidMovie(data) {
+      return data.keys().hasAll(['id', 'title', 'posterUrl', 'description', 'videoUrl'])
+        && data.keys().size() == 5
+        && data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 200
+        && data.posterUrl is string && data.posterUrl.size() <= 1000
+        && data.description is string && data.description.size() <= 2000
+        && data.videoUrl is string && data.videoUrl.size() <= 1000;
+    }
+
+    function isValidSeries(data) {
+      return data.keys().hasAll(['id', 'title', 'posterUrl', 'description'])
+        && data.keys().size() == 4
+        && data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 200
+        && data.posterUrl is string && data.posterUrl.size() <= 1000
+        && data.description is string && data.description.size() <= 2000;
+    }
+
+    function isValidSeason(data) {
+      return data.keys().hasAll(['id', 'seriesId', 'seasonNumber', 'title'])
+        && data.keys().size() == 4
+        && data.id is string && data.id.size() <= 128
+        && data.seriesId is string && data.seriesId.size() <= 128
+        && data.seasonNumber is number
+        && data.title is string && data.title.size() <= 200;
+    }
+
+    function isValidEpisode(data) {
+      return data.keys().hasAll(['id', 'seriesId', 'seasonId', 'episodeNumber', 'title', 'videoUrl'])
+        && data.keys().size() == 6
+        && data.id is string && data.id.size() <= 128
+        && data.seriesId is string && data.seriesId.size() <= 128
+        && data.seasonId is string && data.seasonId.size() <= 128
+        && data.episodeNumber is number
+        && data.title is string && data.title.size() <= 200
+        && data.videoUrl is string && data.videoUrl.size() <= 1000;
+    }
+
+    // Rules matching
+    match /channels/{channelId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidChannel(request.resource.data) && isValidId(channelId);
+      allow delete: if isAdmin();
+    }
+
+    match /matches/{matchId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidLiveMatch(request.resource.data) && isValidId(matchId);
+      allow delete: if isAdmin();
+    }
+
+    match /movies/{movieId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidMovie(request.resource.data) && isValidId(movieId);
+      allow delete: if isAdmin();
+    }
+
+    match /series/{seriesId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidSeries(request.resource.data) && isValidId(seriesId);
+      allow delete: if isAdmin();
+
+      match /seasons/{seasonId} {
+        allow read: if true;
+        allow create, update: if isAdmin() && isValidSeason(request.resource.data) && isValidId(seasonId);
+        allow delete: if isAdmin();
+
+        match /episodes/{episodeId} {
+          allow read: if true;
+          allow create, update: if isAdmin() && isValidEpisode(request.resource.data) && isValidId(episodeId);
+          allow delete: if isAdmin();
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "entities": {
+    "Channel": {
+      "title": "Channel",
+      "description": "IPTV Channel model",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique channel ID" },
+        "name": { "type": "string", "description": "Channel name in Arabic/English" },
+        "logoUrl": { "type": "string", "description": "URL to the channel logo" },
+        "streamUrl": { "type": "string", "description": "HLS .m3u8 or video stream URL" },
+        "category": { "type": "string", "enum": ["sports", "news", "general"], "description": "Channel category" }
+      },
+      "required": ["id", "name", "logoUrl", "streamUrl", "category"]
+    },
+    "LiveMatch": {
+      "title": "Live Match",
+      "description": "Live sports fixture model",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique match ID" },
+        "title": { "type": "string", "description": "Match display title" },
+        "teamHome": { "type": "string", "description": "Home team name" },
+        "teamAway": { "type": "string", "description": "Away team name" },
+        "tournamentName": { "type": "string", "description": "Tournament or league title" },
+        "matchTime": { "type": "string", "description": "Date and time of the match" },
+        "streamUrl": { "type": "string", "description": "Live stream .m3u8 or video URL" },
+        "status": { "type": "string", "enum": ["scheduled", "live", "finished"], "description": "Match status" }
+      },
+      "required": ["id", "title", "teamHome", "teamAway", "tournamentName", "matchTime", "streamUrl", "status"]
+    },
+    "Movie": {
+      "title": "Movie",
+      "description": "On-demand movie model",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique movie ID" },
+        "title": { "type": "string", "description": "Movie title" },
+        "posterUrl": { "type": "string", "description": "URL to the movie poster" },
+        "description": { "type": "string", "description": "Brief plot description" },
+        "videoUrl": { "type": "string", "description": "Movie video stream URL" }
+      },
+      "required": ["id", "title", "posterUrl", "description", "videoUrl"]
+    },
+    "Series": {
+      "title": "Series",
+      "description": "On-demand TV series model",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique series ID" },
+        "title": { "type": "string", "description": "Series title" },
+        "posterUrl": { "type": "string", "description": "URL to the series poster" },
+        "description": { "type": "string", "description": "Brief series description" }
+      },
+      "required": ["id", "title", "posterUrl", "description"]
+    },
+    "Season": {
+      "title": "Season",
+      "description": "Season of a series",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique season ID" },
+        "seriesId": { "type": "string", "description": "Parent series ID" },
+        "seasonNumber": { "type": "number", "description": "Season number (e.g., 1)" },
+        "title": { "type": "string", "description": "Season display title" }
+      },
+      "required": ["id", "seriesId", "seasonNumber", "title"]
+    },
+    "Episode": {
+      "title": "Episode",
+      "description": "Episode of a series season",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique episode ID" },
+        "seriesId": { "type": "string", "description": "Parent series ID" },
+        "seasonId": { "type": "string", "description": "Parent season ID" },
+        "episodeNumber": { "type": "number", "description": "Episode number (e.g., 1)" },
+        "title": { "type": "string", "description": "Episode title" },
+        "videoUrl": { "type": "string", "description": "Episode stream URL" }
+      },
+      "required": ["id", "seriesId", "seasonId", "episodeNumber", "title", "videoUrl"]
+    }
+  },
+  "firestore": {
+    "/channels/{channelId}": {
+      "schema": "Channel",
+      "description": "Collections of live IPTV channels"
+    },
+    "/matches/{matchId}": {
+      "schema": "LiveMatch",
+      "description": "Collection of sports fixtures and live matching streams"
+    },
+    "/movies/{movieId}": {
+      "schema": "Movie",
+      "description": "Collection of available on-demand films"
+    },
+    "/series/{seriesId}": {
+      "schema": "Series",
+      "description": "Collection of TV shows"
+    },
+    "/series/{seriesId}/seasons/{seasonId}": {
+      "schema": "Season",
+      "description": "Subcollection of seasons under each TV series"
+    },
+    "/series/{seriesId}/seasons/{seasonId}/episodes/{episodeId}": {
+      "schema": "Episode",
+      "description": "Subcollection of episodes under a particular season"
+    }
+  }
+}
